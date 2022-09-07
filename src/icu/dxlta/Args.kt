@@ -24,11 +24,4 @@ class Args(args: Array<String>) {
 
     }
 
-
-    companion object {
-        @JvmStatic fun temp () : Args {
-            var e : Array<String> = Array(1) { e -> "" }
-            return Args(e)
-        }
-    }
 }

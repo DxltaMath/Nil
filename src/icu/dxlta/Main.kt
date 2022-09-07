@@ -17,6 +17,7 @@ object Main {
     @JvmStatic fun main () {
 
         app.before { ctx ->
+            ctx.res.addHeader("Access-Control-Allow-Origin", "*")
             ctx.res.addHeader("Cache-Control", "No-Store")
             println(ctx.req.remoteAddr)
         }

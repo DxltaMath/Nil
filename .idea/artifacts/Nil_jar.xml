@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="Nil:jar">
-    <output-path>$PROJECT_DIR$/dist/</output-path>
+    <output-path>$PROJECT_DIR$/build/</output-path>
     <root id="archive" name="Nil.jar">
       <element id="module-output" name="Nil" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/slf4j-simple-1.7.31.jar" path-in-jar="/" />

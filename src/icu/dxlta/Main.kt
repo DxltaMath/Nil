@@ -1,17 +1,24 @@
 package icu.dxlta
 
-import icu.dxlta.constants.VERSION
+import icu.dxlta.constants.Args
+import icu.dxlta.constants.Args.Companion.temp
+import icu.dxlta.constants.Constants
 import io.javalin.Javalin
 
 
 /** entry point */
-fun main(args: Array<String>) {
+fun main (args: Array<String>) {
+
+    Nil.startCaching()
+    Main.args = Args(args)
     Main.main();
 }
 
 object Main {
 
-    @JvmStatic val app : Javalin = Javalin.create().start(constants.HTTP_PORT);
+    @JvmStatic var args : Args = temp();
+
+    @JvmStatic val app : Javalin = Javalin.create().start(Constants.HTTP_PORT);
 
     /** The main server runner. */
     @JvmStatic fun main () {
@@ -35,7 +42,7 @@ object Main {
 
         app.get("/version") { ctx ->
             ctx.res.contentType = "text/plain"
-            ctx.result(VERSION)
+            ctx.result(Constants.VERSION)
         }
 
 
@@ -47,7 +54,7 @@ object Main {
 
         app.get("/") { ctx ->
             ctx.res.contentType = "text/html"
-            ctx.result(website.INDEX)
+            ctx.result(icu.dxlta.constants.Website.INDEX)
         }
 
         app.get("/index.html") { ctx ->
@@ -56,7 +63,7 @@ object Main {
 
         app.get("/style.css") { ctx ->
             ctx.res.contentType = "text/css"
-            ctx.result(website.STYLE)
+            ctx.result(icu.dxlta.constants.Website.STYLE)
         }
     }
 
@@ -64,7 +71,7 @@ object Main {
     @JvmStatic fun redirects () {
 
         app.get("/license") { ctx ->
-            ctx.redirect(constants.LICENSE_LINK)
+            ctx.redirect(Constants.LICENSE_LINK)
         }
 
     }

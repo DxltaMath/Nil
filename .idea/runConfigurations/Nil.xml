@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Nil" type="JarApplication">
-    <option name="JAR_PATH" value="$PROJECT_DIR$/dist/Nil.jar" />
+    <option name="JAR_PATH" value="$PROJECT_DIR$/build/Nil.jar" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2" />

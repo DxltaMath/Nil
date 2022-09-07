@@ -1,11 +1,14 @@
 package icu.dxlta
 
-import icu.dxlta.constants.GUI_LINK
-import icu.dxlta.constants.VERSION
+import java.lang.Thread.sleep
+import icu.dxlta.constants.Constants as constants
 import java.util.*
 
 /** The actual DeltaMath script patcher. */
 object Nil {
+
+    /** Config args for Nil */
+    @JvmStatic private var args = Main.args
 
     /** Latest unmodified main.js */
     @JvmStatic private var latestVanillaFile : String? = null;
@@ -15,39 +18,6 @@ object Nil {
 
     /** Latest main.js URL */
     @JvmStatic private var latestMainJsUrl : String? = null;
-
-
-
-
-
-
-    /** Gets the latest URL to the main.js */
-    @JvmStatic fun getMainJsUrl () : String {
-        if (latestMainJsUrl === null) {
-            val html : String = fetch("https://www.deltamath.com/app/")
-            val output : String = "https://www.deltamath.com/app/" + Regex("""main\..{0,40}\.js""").find(html)?.value.toString();
-            latestMainJsUrl = output;
-        }
-        return latestMainJsUrl as String;
-    }
-
-    /** Gets the latest non-modified main.js file. If it isn't cached, download it. */
-    @JvmStatic fun getFile () : String {
-        if (latestVanillaFile === null) {
-            latestVanillaFile = fetch(getMainJsUrl());
-        }
-        return latestVanillaFile as String;
-    }
-
-    /** Gets the latest patched main.js file. If it isn't cached, patch it. */
-    @JvmStatic fun getPatchedFile () : String {
-        if (latestPatchedFile === null) {
-            latestPatchedFile = patchFile(getFile())
-        }
-        return latestPatchedFile as String;
-    }
-
-
 
 
     /**
@@ -97,14 +67,95 @@ object Nil {
             
             
             console.log("%cNil", "font-size:69px;color:#540052;font-weight:900;font-family:sans-serif;");
-			console.log("%cVersion $VERSION", "font-size:20px;color:#000025;font-weight:700;font-family:sans-serif;");
+			console.log("%cVersion ${constants.VERSION}", "font-size:20px;color:#000025;font-weight:700;font-family:sans-serif;");
 			
 			/* Load the Delta Math Cheat GUI */
 			(async () => {
 				await new Promise(r => setTimeout(r, 5000));
-				await eval(await (await fetch("$GUI_LINK")).text());
+				await eval(await (await fetch("${constants.GUI_LINK}")).text());
 			})();
 			console.trace = () => {};
         """.trimIndent()
     }
+
+
+    /**
+     * Gets the latest URL to the main.js
+     * @author gemsvidø
+     * @return The URL to DeltaMath's main.js file
+     */
+    @JvmStatic fun getMainJsUrl () : String {
+        if (latestMainJsUrl === null) {
+            val html : String = fetch("https://www.deltamath.com/app/")
+            val output : String = "https://www.deltamath.com/app/" + Regex("""main\..{0,40}\.js""").find(html)?.value.toString();
+            latestMainJsUrl = output;
+        }
+        return latestMainJsUrl as String;
+    }
+
+    /**
+     * Gets the latest non-modified main.js file. If it isn't cached, download it.
+     * @author gemsvidø
+     * @return DeltaMath's non-modified main.js
+     */
+    @JvmStatic fun getFile () : String {
+        if (latestVanillaFile === null) {
+            latestVanillaFile = fetch(getMainJsUrl());
+        }
+        return latestVanillaFile as String;
+    }
+
+    /**
+     * Gets the latest patched main.js file. If it isn't cached, patch it.
+     * @author gemsvidø
+     * @return The latest patched main.js file
+     */
+    @JvmStatic fun getPatchedFile () : String {
+        if (latestPatchedFile === null) {
+            latestPatchedFile = patchFile(getFile())
+        }
+        return latestPatchedFile as String;
+    }
+
+
+    /**
+     * Clears the caches every cacheInterval
+     * @author gemsvidø
+     */
+    @JvmStatic fun startCaching () : Unit {
+
+        // Preserve cache
+        if (args.cacheInterval.toInt() == -1) return;
+
+        // Reset cache every 1 second if no caching
+        if (args.cacheInterval < 1000) args.cacheInterval = 1000
+
+        val latestVanillaCache = Thread {
+            while (true) {
+                sleep(args.cacheInterval)
+                latestVanillaFile = null;
+            }
+        }
+        latestVanillaCache.start()
+
+
+        val latestPatchedCache = Thread {
+            while (true) {
+                sleep(args.cacheInterval)
+                latestPatchedFile = null;
+            }
+        }
+        latestPatchedCache.start()
+
+
+        val latestUrlCache = Thread {
+            while (true) {
+                sleep(args.cacheInterval / 2)
+                latestMainJsUrl = null;
+            }
+        }
+        latestUrlCache.start()
+    }
+
+
 }

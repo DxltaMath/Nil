@@ -1,14 +1,12 @@
 package icu.dxlta
 
+import icu.dxlta.constants.Args
 import java.lang.Thread.sleep
 import icu.dxlta.constants.Constants as constants
 import java.util.*
 
 /** The actual DeltaMath script patcher. */
 object Nil {
-
-    /** Config args for Nil */
-    @JvmStatic private var args = Main.args
 
     /** Latest unmodified main.js */
     @JvmStatic private var latestVanillaFile : String? = null;
@@ -122,7 +120,7 @@ object Nil {
      * Clears the caches every cacheInterval
      * @author gemsvidø
      */
-    @JvmStatic fun startCaching () : Unit {
+    @JvmStatic fun startCaching (args: Args) : Unit {
 
         // Preserve cache
         if (args.cacheInterval.toInt() == -1) return;

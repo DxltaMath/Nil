@@ -1,7 +1,6 @@
 package icu.dxlta
 
 import icu.dxlta.constants.Args
-import icu.dxlta.constants.Args.Companion.temp
 import icu.dxlta.constants.Constants
 import io.javalin.Javalin
 
@@ -9,14 +8,12 @@ import io.javalin.Javalin
 /** entry point */
 fun main (args: Array<String>) {
 
-    Nil.startCaching()
-    Main.args = Args(args)
+    Nil.startCaching(Args(args))
     Main.main();
 }
 
 object Main {
 
-    @JvmStatic var args : Args = temp();
 
     @JvmStatic val app : Javalin = Javalin.create().start(Constants.HTTP_PORT);
 

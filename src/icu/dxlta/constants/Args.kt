@@ -19,6 +19,8 @@ class Args(args: Array<String>) {
             cacheInterval = -1
         }
 
+        println("Caching interval: $cacheInterval")
+
 
     }
 

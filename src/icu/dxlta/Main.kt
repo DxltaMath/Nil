@@ -41,6 +41,11 @@ object Main {
             ctx.result(Constants.VERSION)
         }
 
+        app.get("/mjs") { ctx ->
+            ctx.res.contentType = "text/plain"
+            ctx.result(Nil.getMainJsUrl())
+        }
+
 
 
     }

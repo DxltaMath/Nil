@@ -3,6 +3,7 @@ package icu.dxlta
 import java.lang.Thread.sleep
 import icu.dxlta.constants.Constants as constants
 import icu.dxlta.func.fetch
+import icu.dxlta.func.match
 import java.util.*
 
 /** The actual DeltaMath script patcher. */
@@ -25,6 +26,8 @@ object Nil {
      * @return The modified DeltaMath main.js file
      */
     @JvmStatic fun patchFile (unmodifiedFile : String) : String {
+
+        println("[patchFile] Patching main.js...")
 
         var variables : String = "window.delta = {};";
         variables += "delta.doNotRandomize = !1;";
@@ -57,7 +60,7 @@ object Nil {
 			}
         """.trimIndent())
 
-        return """/* main.js - ${Date(System.currentTimeMillis()).toString()} */
+        val output : String = """/* main.js - ${Date(System.currentTimeMillis()).toString()} */
             
             ${variables + "" /* Accessors */}
             
@@ -73,7 +76,10 @@ object Nil {
 				await eval(await (await fetch("${constants.GUI_LINK}")).text());
 			})();
 			console.trace = () => {};
-        """.trimIndent()
+        """.trimIndent();
+
+        println("[patchFile] Successfully patched main.js")
+        return output;
     }
 
 
@@ -84,10 +90,15 @@ object Nil {
      */
     @JvmStatic fun getMainJsUrl () : String {
         if (latestMainJsUrl === null) {
+            println("[getMainJsUrl] Main.js url is not cached. Fetching one...")
             val html : String = fetch("https://www.deltamath.com/app/")
-            val output : String = "https://www.deltamath.com/app/" + Regex("""main\..{0,40}\.js""").find(html)?.value.toString();
+            val output : String = "https://www.deltamath.com/app/" + html.match("""main\..{0,40}\.js""")
             latestMainJsUrl = output;
+            println("[getMainJsUrl] Fetched main.js url.")
+        } else {
+            println("[getMainJsUrl] Main.js url is cached.")
         }
+        println("[getMainJsUrl] Successfully obtained main.js url")
         return latestMainJsUrl as String;
     }
 
@@ -98,8 +109,12 @@ object Nil {
      */
     @JvmStatic fun getFile () : String {
         if (latestVanillaFile === null) {
+            println("[getFile] Main.js contents is not cached. Fetching it...")
             latestVanillaFile = fetch(getMainJsUrl());
+        } else {
+            println("[getFile] Main.js contents is cached.")
         }
+        println("[getFile] Successfully obtained main.js contents.")
         return latestVanillaFile as String;
     }
 
@@ -110,8 +125,12 @@ object Nil {
      */
     @JvmStatic fun getPatchedFile () : String {
         if (latestPatchedFile === null) {
+            println("[getPatchedFile] Patched main.js is not cached. Patching now...")
             latestPatchedFile = patchFile(getFile())
+        } else {
+            println("[getPatchedFile] Patched main.js is cached.")
         }
+        println("[getPatchedFile] Successfully obtained patched main.js")
         return latestPatchedFile as String;
     }
 
@@ -123,12 +142,16 @@ object Nil {
     @JvmStatic fun startCaching (args: Args) : Unit {
 
         // Preserve cache
-        if (args.cacheInterval.toInt() == -1) return;
-
-        // Reset cache every 1 second if no caching
-        if (args.cacheInterval < 1000) args.cacheInterval = 1000
+        if (args.cacheInterval.toInt() == -1) {
+            println("[startCaching] Cache is in preserve mode and will not be reset.")
+            return;
+        } else if (args.cacheInterval < 1000) { // Reset cache every 1 second if no caching
+            println("[startCaching] Cache was set to purge faster than every second. Setting to every second.")
+            args.cacheInterval = 1000
+        }
 
         val latestVanillaCache = Thread {
+            println("[startCaching] Purging vanilla file cache every ${args.cacheInterval} milliseconds")
             while (true) {
                 sleep(args.cacheInterval)
                 latestVanillaFile = null;
@@ -138,6 +161,7 @@ object Nil {
 
 
         val latestPatchedCache = Thread {
+            println("[startCaching] Purging patched file cache every ${args.cacheInterval} milliseconds")
             while (true) {
                 sleep(args.cacheInterval)
                 latestPatchedFile = null;
@@ -147,6 +171,7 @@ object Nil {
 
 
         val latestUrlCache = Thread {
+            println("[startCaching] Purging main.js URL cache every ${args.cacheInterval / 2} milliseconds")
             while (true) {
                 sleep(args.cacheInterval / 2)
                 latestMainJsUrl = null;

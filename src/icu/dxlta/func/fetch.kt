@@ -6,6 +6,7 @@ import java.util.*
 
 /** Get text from an online resource */
 fun fetch (url : URL) : String {
+    println("Fetching resource from $url")
     return Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next()
 }
 

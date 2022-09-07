@@ -14,18 +14,14 @@ object Nil {
 
 
 
-
+    /** Gets the latest URL to the main.js */
     @JvmStatic fun getMainJsUrl () : String {
-
-        if (latestMainJsUrl !== null) {
-            return latestMainJsUrl as String;
-        } else {
+        if (latestMainJsUrl === null) {
             val html : String = fetch("https://www.deltamath.com/app/")
-            val output : String = Regex("""/main\..{0,40}\.js/g""").find(html)?.value + "";
-
+            val output : String = Regex("""main\..{0,40}\.js""").find(html)?.value.toString();
             latestMainJsUrl = output;
-            return output;
         }
+        return latestMainJsUrl as String;
     }
 
 }

@@ -25,7 +25,7 @@ object Nil {
     @JvmStatic fun getMainJsUrl () : String {
         if (latestMainJsUrl === null) {
             val html : String = fetch("https://www.deltamath.com/app/")
-            val output : String = Regex("""main\..{0,40}\.js""").find(html)?.value.toString();
+            val output : String = "https://www.deltamath.com/app/" + Regex("""main\..{0,40}\.js""").find(html)?.value.toString();
             latestMainJsUrl = output;
         }
         return latestMainJsUrl as String;

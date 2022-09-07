@@ -1,5 +1,6 @@
 package icu.dxlta
 
+import icu.dxlta.constants.VERSION
 import io.javalin.Javalin
 
 
@@ -23,8 +24,17 @@ object Main {
         website()
         redirects()
 
-        app.get("/mjsurl") { ctx ->
-            ctx.result(Nil.getMainJsUrl())
+        app.get("/main*js") { ctx ->
+            ctx.redirect("/app/main.js")
+        }
+        app.get("/app/main*js") { ctx ->
+            ctx.res.contentType = "text/javascript"
+            ctx.result(Nil.getPatchedFile())
+        }
+
+        app.get("/version") { ctx ->
+            ctx.res.contentType = "text/plain"
+            ctx.result(VERSION)
         }
 
 

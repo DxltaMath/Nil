@@ -1,6 +1,7 @@
 import io.javalin.Javalin
 
-fun main() {
-    val app = Javalin.create().start(7070)
+fun main (args : Array<String>) {
+
+    val app = Javalin.create().start(x.HTTP_PORT)
     app.get("/") { ctx -> ctx.result("Hello World") }
 }

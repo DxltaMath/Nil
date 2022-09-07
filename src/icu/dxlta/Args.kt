@@ -1,4 +1,4 @@
-package icu.dxlta.constants
+package icu.dxlta
 
 import java.lang.Integer.parseInt
 

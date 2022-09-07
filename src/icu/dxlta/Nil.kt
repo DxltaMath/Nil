@@ -1,8 +1,8 @@
 package icu.dxlta
 
-import icu.dxlta.constants.Args
 import java.lang.Thread.sleep
 import icu.dxlta.constants.Constants as constants
+import icu.dxlta.func.fetch
 import java.util.*
 
 /** The actual DeltaMath script patcher. */

@@ -1,4 +1,4 @@
-package icu.dxlta
+package icu.dxlta.func
 
 import java.net.URI
 import java.net.URL

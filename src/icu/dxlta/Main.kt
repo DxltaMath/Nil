@@ -3,14 +3,23 @@ package icu.dxlta
 import io.javalin.Javalin
 
 
-class Main
+/** entry point */
+fun main(args: Array<String>) {
+    Main.main();
+}
 
-fun main (args : Array<String>) {
+object Main {
 
-    val app = Javalin.create().start(constants.HTTP_PORT)
-    app.get("/") { ctx ->
+    @JvmStatic val app : Javalin = Javalin.create().start(constants.HTTP_PORT);
 
-        ctx.res.contentType = "text/html"
-        ctx.result(website.INDEX)
+    @JvmStatic fun main () {
+
+        app.get("/") { ctx ->
+            ctx.res.contentType = "text/html"
+            ctx.result(website.INDEX)
+        }
     }
+
+
+
 }

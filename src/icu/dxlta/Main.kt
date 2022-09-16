@@ -2,6 +2,7 @@ package icu.dxlta
 
 import icu.dxlta.constants.Constants
 import io.javalin.Javalin
+import kotlin.system.exitProcess
 
 
 /** entry point */

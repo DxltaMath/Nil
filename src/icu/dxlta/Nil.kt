@@ -4,6 +4,8 @@ import java.lang.Thread.sleep
 import icu.dxlta.constants.Constants as constants
 import icu.dxlta.func.fetch
 import icu.dxlta.func.match
+import icu.dxlta.patching.Patches
+import icu.dxlta.patching.Variables
 import java.util.*
 
 /** The actual DeltaMath script patcher. */
@@ -29,13 +31,13 @@ object Nil {
 
         println("[patchFile] Patching main.js...")
 
-        var variables : String = "window.delta = {};";
-        variables += "delta.doNotRandomize = !1;";
-        variables += "delta.allowEscapingTimed = false;";
+        val variables : Variables = Variables();
+        variables.push("delta.doNotRandomize=!1")
+        variables.push("delta.allowEscapingTimed=false")
 
-        var patched : String = unmodifiedFile;
-        patched = patched.replace("doNotRandomize=!1", "doNotRandomize=delta.doNotRandomize")
-        patched = patched.replace("function y(t){return function(e){if(\"__ngUnwrap__\"===e)return t;!1===t(e)&&(e.preventDefault(),e.returnValue=!1)}}", """
+        val patches : Patches = Patches(unmodifiedFile);
+        patches.push("doNotRandomize=!1", "doNotRandomize=window.delta.doNotRandomize")
+        patches.push("function y(t){return function(e){if(\"__ngUnwrap__\"===e)return t;!1===t(e)&&(e.preventDefault(),e.returnValue=!1)}}", """
             function y(t) {
                 return function(e) {
                     if (e.path[0].tagName === "BUTTON" && e.path[0].className === "btn btn-default timed-start-button") {
@@ -46,7 +48,7 @@ object Nil {
                 }
             }
         """.trimIndent())
-        patched = patched.replace("{if(\$(\".timed-start-button\").length&&\"Stop\"==\$(\".timed-start-button\").text())return alertDialog(\"You must stop the timer before pressing back. \");this.router.url.startsWith(\"/explore\")?this.router.navigate([\"/explore\"]):this.router.url.startsWith(\"/student\")?this.router.navigate([\"/student\"]):this.location.back()}", """
+        patches.push("{if(\$(\".timed-start-button\").length&&\"Stop\"==\$(\".timed-start-button\").text())return alertDialog(\"You must stop the timer before pressing back. \");this.router.url.startsWith(\"/explore\")?this.router.navigate([\"/explore\"]):this.router.url.startsWith(\"/student\")?this.router.navigate([\"/student\"]):this.location.back()}", """
             {
 				/* Only happens while timer is running */
 				/** Allow exiting timed problems without clicking "Stop" */
@@ -62,9 +64,9 @@ object Nil {
 
         val output : String = """/* main.js - ${Date(System.currentTimeMillis()).toString()} */
             
-            ${variables + "" /* Accessors */}
+            ${variables.get() /* Accessors */}
             
-            ${patched + "" /* Patched main.js */}
+            ${patches.get() /* Patched main.js */}
             
             
             console.log("%cNil", "font-size:69px;color:#540052;font-weight:900;font-family:sans-serif;");

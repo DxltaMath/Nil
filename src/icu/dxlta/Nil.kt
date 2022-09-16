@@ -32,7 +32,7 @@ object Nil {
         println("[patchFile] Patching main.js...")
 
         val variables : Variables = Variables();
-        variables.push("delta.doNotRandomize=!1")
+        variables.push("delta.doNotRandomize=false")
         variables.push("delta.allowEscapingTimed=false")
 
         val patches : Patches = Patches(unmodifiedFile);

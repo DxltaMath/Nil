@@ -1,8 +1,8 @@
 package icu.dxlta
 
 import icu.dxlta.constants.Constants
+import icu.dxlta.constants.Website
 import io.javalin.Javalin
-import kotlin.system.exitProcess
 
 
 /** entry point */
@@ -56,7 +56,7 @@ object Main {
 
         app.get("/") { ctx ->
             ctx.res.contentType = "text/html"
-            ctx.result(icu.dxlta.constants.Website.INDEX)
+            ctx.result(Website.INDEX)
         }
 
         app.get("/index.html") { ctx ->
@@ -65,7 +65,7 @@ object Main {
 
         app.get("/style.css") { ctx ->
             ctx.res.contentType = "text/css"
-            ctx.result(icu.dxlta.constants.Website.STYLE)
+            ctx.result(Website.STYLE)
         }
     }
 

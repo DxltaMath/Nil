@@ -16,16 +16,16 @@ object Main {
 
 
     @JvmStatic val app : Javalin = Javalin.create { config ->
-        config.enableCorsForAllOrigins()
+
     }.start(Constants.HTTP_PORT);
 
     /** The main server runner. */
     @JvmStatic fun main () {
 
         app.before { ctx ->
-            ctx.res.addHeader("Access-Control-Allow-Origin", "*")
-            ctx.res.addHeader("Cache-Control", "No-Store")
-            println(ctx.req.remoteAddr)
+            ctx.header("Access-Control-Allow-Origin", "*")
+            ctx.header("Cache-Control", "No-Store")
+            println(ctx.ip())
         }
 
         website()
@@ -35,17 +35,17 @@ object Main {
             ctx.redirect("/app/main.js")
         }
         app.get("/app/main*js") { ctx ->
-            ctx.res.contentType = "text/javascript"
+            ctx.contentType("text/javascript");
             ctx.result(Nil.getPatchedFile())
         }
 
         app.get("/version") { ctx ->
-            ctx.res.contentType = "text/plain"
+            ctx.contentType("text/plain");
             ctx.result(Constants.VERSION)
         }
 
         app.get("/mjs") { ctx ->
-            ctx.res.contentType = "text/plain"
+            ctx.contentType("text/plain");
             ctx.result(Nil.getMainJsUrl())
         }
 
@@ -57,7 +57,7 @@ object Main {
     @JvmStatic fun website () {
 
         app.get("/") { ctx ->
-            ctx.res.contentType = "text/html"
+            ctx.contentType("text/html");
             ctx.result(Website.INDEX)
         }
 
@@ -66,7 +66,7 @@ object Main {
         }
 
         app.get("/style.css") { ctx ->
-            ctx.res.contentType = "text/css"
+            ctx.contentType("text/css");
             ctx.result(Website.STYLE)
         }
     }

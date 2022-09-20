@@ -15,7 +15,9 @@ fun main (args: Array<String>) {
 object Main {
 
 
-    @JvmStatic val app : Javalin = Javalin.create().start(Constants.HTTP_PORT);
+    @JvmStatic val app : Javalin = Javalin.create { config ->
+        config.enableCorsForAllOrigins()
+    }.start(Constants.HTTP_PORT);
 
     /** The main server runner. */
     @JvmStatic fun main () {

@@ -1,3 +1,6 @@
+# DEPRECATED IN FAVOR OF [NIL V3](https://github.com/DxltaMath/Nil3)
+
+
 Running:
 ```shell
 java -jar build/Nil.jar

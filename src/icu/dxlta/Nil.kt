@@ -62,6 +62,29 @@ object Nil {
 			}
         """.trimIndent())
 
+
+        patches.push("ProblemDataService.prototype.submitTimedRecord=function(t,e){", """
+            ProblemDataService.prototype.submitTimedRecord = function(t, e) {
+                if (window.delta.doNotRandomize == true) {
+                    window.delta.doNotRandomize=false;
+                    window.delta.tempDnr=true;
+                }
+        """.trimIndent())
+
+        patches.push("this.authHttp.post(i.requestPath,i.request).subscribe((function(t){var i=t;i.message?(alertDialog(i.message),i.hide_assignment&&(_.find(n.studentDataService.studentAssignments,(function(t){return t.id==i.hide_assignment})).hide_assignment=!0,n.router.navigate([\"/student\"]))):(n.studentDataService.updateAssignment(i.assignment),e(i.assignment))}))", """
+            this.authHttp.post(i.requestPath, i.request).subscribe((function(t) {
+            var i = t;
+            i.message ? (alertDialog(i.message), i.hide_assignment && (_.find(n.studentDataService.studentAssignments, (function(t) {
+                return t.id == i.hide_assignment
+            })).hide_assignment = !0, n.router.navigate(["/student"]))) : (n.studentDataService.updateAssignment(i.assignment), e(i.assignment))
+                
+                if (window.delta.tempDnr) {
+                    window.delta.doNotRandomize=true;
+                    window.delta.tempDnr=undefined;
+                }
+            }))
+        """.trimIndent())
+
         val output : String = """/* main.js - ${Date(System.currentTimeMillis()).toString()} */
             
             ${variables.get() /* Accessors */}
